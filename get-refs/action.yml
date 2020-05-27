@@ -1,0 +1,16 @@
+name: 'Get Refs'
+description: 'Get a list of existing github refs for your repo.'
+inputs:
+  token: 
+    description: 'Github token.'
+    required: true
+  ref:
+    description: 'The ref to search for, returns all refs that are prefixed with ref.'
+    required: false
+    defaul: ''
+outputs:
+  refs:
+    description: 'All matching refs.'
+runs:
+  using: 'node12'
+  main: 'index.js'

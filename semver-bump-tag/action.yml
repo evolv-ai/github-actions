@@ -1,0 +1,26 @@
+name: 'Semantic Version Bump and Tag'
+description: 'Takes an array of github tag objects, and determines the major, minor, or patch version to bump. then creates the tag'
+inputs:
+  token: 
+    description: 'Github token.'
+    required: true
+  tags:
+    description: 'Stringified array of github tag objects.'
+    required: true
+  bump:
+    decription: 'Choose between `major`, `minor` or `patch`.'
+    required: true
+  prefix:
+    description: Prefix for the resulting tag.
+    required: false
+    default: 'v'
+  suffix:
+    description: Suffix for the resulting tag.
+    required: false
+    default: 'v'
+outputs:
+  tag:
+    description: 'The created tag.'
+runs:
+  using: 'node12'
+  main: 'index.js'
