@@ -63,7 +63,7 @@ async function run() {
 				return groups;
 			});
 
-		let newTag = `${major || 1}.${minor || 0}.0`
+		let newTag = `${prefix}${major || 1}.${minor || 0}.0${suffix}`
 		if (semvers.length > 0) {
 			newTag = generateNewTag(semvers, bump, prefix, suffix);
 		}
