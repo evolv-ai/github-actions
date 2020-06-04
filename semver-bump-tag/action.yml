@@ -4,9 +4,6 @@ inputs:
   token: 
     description: 'Github token.'
     required: true
-  tags:
-    description: 'Stringified array of github tag objects.'
-    required: true
   bump:
     decription: 'Choose between `major`, `minor` or `patch`.'
     required: true
