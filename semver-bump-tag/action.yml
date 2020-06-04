@@ -10,6 +10,12 @@ inputs:
   bump:
     decription: 'Choose between `major`, `minor` or `patch`.'
     required: true
+  major:
+    description: Filter tags for `major`.
+    required: false
+  minor:
+    description: Filter tags for minor, must be using `major` input too.
+    required: false
   prefix:
     description: Prefix for the resulting tag.
     required: false
