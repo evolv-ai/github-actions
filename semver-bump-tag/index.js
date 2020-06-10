@@ -10,7 +10,10 @@ function generateNewTag(semvers, bump, prefix, suffix) {
 	let maxNum = 0;
 	let maxSemver = null;
 	semvers.map(semver => {     
-			if (semver[bump] >= maxNum) maxSemver = semver;    
+			if (semver[bump] >= maxNum) { 
+				maxSemver = semver
+				maxNum = semver[bump]
+			};    
 	});
 
 	maxSemver[bump] = maxSemver[bump] + 1;
