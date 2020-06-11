@@ -70,14 +70,14 @@ function postFailMessage(webhook, context, pull, commits, targetVersion) {
 				"type": "section",
 				"text": {
 					"type": "mrkdwn",
-					"text": `You must perform the cherry-picking process manually by folowing the steps below while in the ${context.repo.owner}/${context.repo.repo} repo:`
+					"text": `You must perform the cherry-picking process manually by following the steps below while in the ${context.repo.owner}/${context.repo.repo} repo:`
 				}
 			},
 			{
 				"type": "section",
 				"text": {
 					"type": "mrkdwn",
-					"text": `\`\`\`git fetch --all --tags\ngit checkout -b cherry-pick/pull-${pull.number} ${targetVersion}.<latest patch version>\ngit cherry-pick ${commits.length === 1 ? commits[0] : `${commits[0]}^...${commits[commits.length - 1]}`}\ngit tag ${targetVersion}.<latest patch version + 1>\ngit push --tags\`\`\``
+					"text": `\`\`\`git fetch --tags\ngit checkout -b cherry-pick/pull-${pull.number} ${targetVersion}.<latest patch version>\ngit cherry-pick ${commits.length === 1 ? commits[0] : `${commits[0]}^...${commits[commits.length - 1]}`}\ngit tag ${targetVersion}.<latest patch version + 1>\ngit push --tags\`\`\``
 				}
 			}
 		]
