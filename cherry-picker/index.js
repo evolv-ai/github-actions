@@ -250,7 +250,7 @@ async function run() {
 				console.log('Cherry picking commits on top of:', tagRef.ref);
 				const newBranch = await createRef(client, context, `refs/${branchRef}`, tagRef.object.sha);
 				const newHeadSha = await cherryPickCommits(client, context, branchName, commits);
-				const newTag = await createRef(client, context, `refs/tags/v${semver.major}.${semver.minor}.${semver.patch + 1}+${Date.now()}`, newHeadSha);
+				const newTag = await createRef(client, context, `refs/tags/v${semver.major}.${semver.minor}.${semver.patch + 1}`, newHeadSha);
 				console.log('Successfully cherry picked commits and created tag:', newTag.ref);
 
 				response.success = true;
