@@ -71,6 +71,13 @@ async function run() {
 			newTag = generateNewTag(semvers, bump, prefix, suffix);
 		}
 
+		const duplicateTag = tags.find(tag => tag.ref === `refs/tags/${newTag}`);
+		if (duplicateTag) {
+			console.log('Tag is a duplicate. Not creating tag again.');
+			core.setOutput('tag', newTag);
+			return;
+		}
+
 		const resp = await client.git.createRef({
 			...context.repo,
 			sha: context.sha,
