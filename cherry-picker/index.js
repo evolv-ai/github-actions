@@ -180,6 +180,14 @@ async function getPullComments(client, context, pullNumber) {
 	return response.data;
 }
 
+async function getIssueComments(client, context, pullNumber) {
+	const response = await client.issues.listComments({
+		...context.repo,
+		issue_number: pullNumber
+	})
+	return response.data;
+}
+
 async function getPullCommitShas(client, context, pullNumber) {
 	const pullCommits = (await client.pulls.listCommits({
 		...context.repo,
@@ -197,7 +205,6 @@ function getHotfixes(pull, comments) {
 		return [match[1], match[2]].filter(group => group);
 	}
 
-	console.log(comments)
 	const matches = comments
 	 .map(comment => comment.body.match(regex))
 	 .filter(match => match);
@@ -233,9 +240,10 @@ async function run() {
 		console.log('Beginning cherry pick routine...');
 
 		const pull = await getPull(client, context, pullNumber);
-		const comments = await getPullComments(client, context, pull.number);
+		const reviewComments = await getPullComments(client, context, pull.number);
+		const issueComments = await getIssueComments(client, context, pull.number);
+		const comments = [...reviewComments, ...issueComments];
 
-		console.log(comments);
 		const hotfixes = getHotfixes(pull, comments)
 		if (hotfixes.length === 0) {
 			console.log('Bailing, no versions to hotfix.')
