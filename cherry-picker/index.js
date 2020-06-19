@@ -235,6 +235,7 @@ async function run() {
 		const pull = await getPull(client, context, pullNumber);
 		const comments = await getPullComments(client, context, pull.number);
 
+		console.log(comments);
 		const hotfixes = getHotfixes(pull, comments)
 		if (hotfixes.length === 0) {
 			console.log('Bailing, no versions to hotfix.')
