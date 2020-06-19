@@ -3,6 +3,8 @@ const github = require('@actions/github');
 const cherry = require('github-cherry-pick');
 const axios = require('axios');
 
+HOTFIX_REGEX = 'hotfix-(v\\d+.\\d+)-?(v\\d+.\\d+)?'
+
 function postSlackMessage(webhook, data) {
 	if (webhook) {
 		axios.post(
@@ -32,7 +34,7 @@ function postStartMessage(webhook, context, pull, hotfixes) {
 	});
 }
 
-function postSuccessMessage(webhook, context, pull, targetVersion, newTag) {
+function postSuccessMessage(webhook, context, pull, targetVersion, newTag, previousTag) {
 	const userName = getSlackUserName(pull);
 	const tag = newTag.replace('refs/tags/', '')
 	postSlackMessage(webhook, {
@@ -49,6 +51,13 @@ function postSuccessMessage(webhook, context, pull, targetVersion, newTag) {
 				"text": {
 					"type": "mrkdwn",
 					"text": `The latest tag for \`${targetVersion}\` has been created at <https://github.com/${context.repo.owner}/${context.repo.repo}/tree/${tag}|${tag}>`
+				}
+			},
+			{
+				"type": "section",
+				"text": {
+					"type": "mrkdwn",
+					"text": `You can see a diff between the last tag <https://github.com/${context.repo.owner}/${context.repo.repo}/compare/${previousTag}...${tag}|here>.`
 				}
 			}
 		]
@@ -163,6 +172,22 @@ async function getPull(client, context, pullNumber) {
 	return response.data;
 }
 
+async function getPullComments(client, context, pullNumber) {
+	const response = await client.pulls.listComments({
+		...context.repo,
+		pull_number: pullNumber
+	})
+	return response.data;
+}
+
+async function getIssueComments(client, context, pullNumber) {
+	const response = await client.issues.listComments({
+		...context.repo,
+		issue_number: pullNumber
+	})
+	return response.data;
+}
+
 async function getPullCommitShas(client, context, pullNumber) {
 	const pullCommits = (await client.pulls.listCommits({
 		...context.repo,
@@ -172,11 +197,23 @@ async function getPullCommitShas(client, context, pullNumber) {
 	return commits;
 }
 
-function getHotfixes(branch) {
-	const branchParts = branch.split('/');
-	const hotfixParts = branchParts[0].split('-');
-	const hotfixes = hotfixParts.filter(hf => hf && hf !== 'hotfix' && hf.split('.').length == 2);
-	return hotfixes;
+function getHotfixes(pull, comments) {
+	const regex = new RegExp(HOTFIX_REGEX);
+	
+	const match = pull.head.ref.match(regex);
+	if (match) {
+		return [match[1], match[2]].filter(group => group);
+	}
+
+	const matches = comments
+	 .map(comment => comment.body.match(regex))
+	 .filter(match => match);
+
+	if (matches.length > 0) {
+		return [matches[0][1], matches[0][2]].filter(group => group);
+	}
+
+	return []
 }
 
 async function cherryPickCommits(octokit, context, head, commits) {
@@ -203,16 +240,19 @@ async function run() {
 		console.log('Beginning cherry pick routine...');
 
 		const pull = await getPull(client, context, pullNumber);
-		console.log('Pull branch:', pull.head.ref);
-		if (!pull.head.ref.startsWith('hotfix')) {
-			console.log('Bailing, branch does not begin with hotfix.')
-			return;
-		}
+		const reviewComments = await getPullComments(client, context, pull.number);
+		console.log('review')
+		console.log(reviewComments)
+		const issueComments = await getIssueComments(client, context, pull.number);
+		console.log('issue')
+		console.log(issueComments)
+		const comments = [...reviewComments, ...issueComments];
 
-		const hotfixes = getHotfixes(pull.head.ref);
+		const hotfixes = getHotfixes(pull, comments)
 		if (hotfixes.length === 0) {
 			console.log('Bailing, no versions to hotfix.')
-			return;		}
+			return;		
+		}
 
 		const commits = await getPullCommitShas(client, context, pullNumber);
 		if (commits.length > 99) {
@@ -256,7 +296,7 @@ async function run() {
 				response.success = true;
 				response.newTag = newTag;
 
-				postSuccessMessage(slackWebhook, context, pull, `v${semver.major}.${semver.minor}`, newTag.ref);
+				postSuccessMessage(slackWebhook, context, pull, `v${semver.major}.${semver.minor}`, newTag.ref, `v${semver.major}.${semver.minor}.${semver.patch}`);
 			} catch (error) {
 				postFailMessage(slackWebhook, context, pull, commits, `v${semver.major}.${semver.minor}`);
 				console.log('An error occurred while trying to cherry pick.');
