@@ -197,6 +197,7 @@ function getHotfixes(pull, comments) {
 		return [match[1], match[2]].filter(group => group);
 	}
 
+	console.log(comments)
 	const matches = comments
 	 .map(comment => comment.body.match(regex))
 	 .filter(match => match);
