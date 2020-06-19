@@ -233,7 +233,7 @@ async function run() {
 		console.log('Beginning cherry pick routine...');
 
 		const pull = await getPull(client, context, pullNumber);
-		const comments = getPullComments(client, context, pull.number);
+		const comments = await getPullComments(client, context, pull.number);
 
 		const hotfixes = getHotfixes(pull, comments)
 		if (hotfixes.length > 0) {
