@@ -241,11 +241,7 @@ async function run() {
 
 		const pull = await getPull(client, context, pullNumber);
 		const reviewComments = await getPullComments(client, context, pull.number);
-		console.log('review')
-		console.log(reviewComments)
 		const issueComments = await getIssueComments(client, context, pull.number);
-		console.log('issue')
-		console.log(issueComments)
 		const comments = [...reviewComments, ...issueComments];
 
 		const hotfixes = getHotfixes(pull, comments)
