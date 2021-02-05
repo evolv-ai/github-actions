@@ -1,0 +1,32 @@
+name: 'Set Variables'
+description: 'Set common environment variables needed for deployments'
+author: Evolv
+inputs:
+  token:
+    description: 'GitHub token'
+    required: true
+  SLACK_WEBHOOK:
+    description: 'Webhook for Slack channel for notifications of dev deployments'
+    required: true
+  PROD_SLACK_WEBHOOK:
+    description: 'Webhook for Slack channel for notifications of prod deployments'
+    required: true
+  STAGING_SLACK_WEBHOOK:
+    description: 'Webhook for Slack channel for notifications of staging deployments'
+    required: true
+outputs:
+  SEM_VER:
+    description: ''
+  NODE_ENV:
+    description: ''
+  SLACK_CHANNEL:
+    description: ''
+  CREATE_RELEASE:
+    description: ''
+  PRERELEASE:
+    description: ''
+  SLACK_WEBHOOK:
+    description: ''
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
