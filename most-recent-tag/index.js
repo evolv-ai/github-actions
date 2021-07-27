@@ -7,7 +7,7 @@ async function run() {
 		const { context } = github;
 
 		const token = core.getInput('token');
-		const client = new github.GitHub(token);
+		const client = new github.getOctokit(token);
 		const { owner, repo } = context.repo;
 
 		const { data } = await client.repos.listTags({ ...context.repo });
