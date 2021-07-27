@@ -1,0 +1,12 @@
+name: 'Get most recent tag'
+description: 'Returns the most recent tag (that is, highest semver) tagged for this repo'
+inputs:
+  token:
+    description: 'GitHub Token'
+    required: true
+outputs:
+  mostRecent:
+    description: 'The most recent tag tagged for this repo'
+runs:
+  using: 'node12'
+  main: 'index.js'
