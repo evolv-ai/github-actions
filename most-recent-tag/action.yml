@@ -9,4 +9,4 @@ outputs:
     description: 'The most recent tag tagged for this repo'
 runs:
   using: 'node12'
-  main: 'index.js'
+  main: 'dist/index.js'
