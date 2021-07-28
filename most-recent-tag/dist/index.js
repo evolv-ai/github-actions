@@ -9496,10 +9496,10 @@ async function run() {
 		const { context } = github;
 
 		const token = core.getInput('token');
-		const client = new github.getOctokit(token);
+		const { rest: { repos } } = new github.getOctokit(token);
 		const { owner, repo } = context.repo;
 
-		const { data } = await client.repos.listTags({ ...context.repo });
+		const { data } = await repos.listTags({ ...context.repo });
 
 		if (!data || !data[0]) {
 			throw new Error(`Error retrieving tags for '${owner}/${repo}'`);
@@ -9507,7 +9507,7 @@ async function run() {
 
 		const [mostRecent] = data;
 
-		core.setOutput('mostRecent', mostRecent);
+		core.setOutput('mostRecent', mostRecent.name);
 	} catch (error) {
 		core.error(error);
 		core.setFailed(error.message);
