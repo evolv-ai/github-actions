@@ -18,6 +18,9 @@ export async function run() {
 
 		const [mostRecent] = data;
 
+		console.log(mostRecent);
+		console.log(mostRecent.name);
+
 		core.setOutput('mostRecent', mostRecent.name);
 	} catch (error) {
 		core.error(error);
