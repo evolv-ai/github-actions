@@ -2,7 +2,7 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 
 
-async function run() {
+export async function run() {
 	try {
 		const { context } = github;
 
@@ -24,5 +24,3 @@ async function run() {
 		core.setFailed(error.message);
 	}
 }
-
-run();
