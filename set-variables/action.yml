@@ -28,5 +28,5 @@ outputs:
   SLACK_WEBHOOK:
     description: ''
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'

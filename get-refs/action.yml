@@ -1,7 +1,7 @@
 name: 'Get Refs'
 description: 'Get a list of existing github refs for your repo.'
 inputs:
-  token: 
+  token:
     description: 'Github token.'
     required: true
   ref:
@@ -12,5 +12,5 @@ outputs:
   refs:
     description: 'All matching refs.'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'index.js'
