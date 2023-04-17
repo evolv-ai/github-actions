@@ -8,5 +8,5 @@ outputs:
   mostRecent:
     description: 'The most recent tag tagged for this repo'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
