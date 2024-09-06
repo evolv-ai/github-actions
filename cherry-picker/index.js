@@ -233,7 +233,7 @@ async function run() {
 		const pullNumber = parseInt(core.getInput('pull_number'));
 		const slackWebhook = core.getInput('slack_webhook');
 
-		const client = new github.GitHub(token);
+		const client = github.getOctokit(token).rest;
 
 		console.log(`Repo: ${context.repo.owner}/${context.repo.repo}`);
 		console.log('Pull request number:', pullNumber);
