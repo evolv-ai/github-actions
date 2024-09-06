@@ -155,7 +155,7 @@ async function getLatestSemvers(client, context, hotfixes) {
 				if (semver.patch >= maxNum) {
 					maxSemver = semver;
 					maxNum = semver.patch;
-				};   
+				};
 			});
 
 		latestSemvers.push(maxSemver);
@@ -199,7 +199,7 @@ async function getPullCommitShas(client, context, pullNumber) {
 
 function getHotfixes(pull, comments) {
 	const regex = new RegExp(HOTFIX_REGEX);
-	
+
 	const match = pull.head.ref.match(regex);
 	if (match) {
 		return [match[1], match[2]].filter(group => group);
@@ -247,7 +247,7 @@ async function run() {
 		const hotfixes = getHotfixes(pull, comments)
 		if (hotfixes.length === 0) {
 			console.log('Bailing, no versions to hotfix.')
-			return;		
+			return;
 		}
 
 		const commits = await getPullCommitShas(client, context, pullNumber);
