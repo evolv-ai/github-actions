@@ -173,7 +173,7 @@ async function getPull(client, context, pullNumber) {
 }
 
 async function getPullComments(client, context, pullNumber) {
-	const response = await client.pulls.listComments({
+	const response = await client.pulls.listCommentsForReview({
 		...context.repo,
 		pull_number: pullNumber
 	})
