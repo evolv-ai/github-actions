@@ -172,14 +172,6 @@ async function getPull(client, context, pullNumber) {
 	return response.data;
 }
 
-async function getPullComments(client, context, pullNumber) {
-	const response = await client.pulls.listCommentsForReview({
-		...context.repo,
-		pull_number: pullNumber
-	})
-	return response.data;
-}
-
 async function getIssueComments(client, context, pullNumber) {
 	const response = await client.issues.listComments({
 		...context.repo,
@@ -237,20 +229,24 @@ async function run() {
 
 		console.log(`Repo: ${context.repo.owner}/${context.repo.repo}`);
 		console.log('Pull request number:', pullNumber);
-		console.log('Beginning cherry pick routine...');
+		console.log('Beginning the cherry pick routine...');
 
 		const pull = await getPull(client, context, pullNumber);
-		const reviewComments = await getPullComments(client, context, pull.number);
+		console.log('Got pull...');
+		console.log('Getting issue comments...')
 		const issueComments = await getIssueComments(client, context, pull.number);
-		const comments = [...reviewComments, ...issueComments];
+		console.log('Got issue comments...');
 
-		const hotfixes = getHotfixes(pull, comments)
+		const hotfixes = getHotfixes(pull, issueComments)
 		if (hotfixes.length === 0) {
 			console.log('Bailing, no versions to hotfix.')
 			return;
 		}
 
+		console.log('Getting pull commits...')
 		const commits = await getPullCommitShas(client, context, pullNumber);
+		console.log('Got commits...');
+
 		if (commits.length > 99) {
 			throw Error('Bailing, only 99 or less commits are allowed to be cherry picked via this action.');
 		}
