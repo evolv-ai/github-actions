@@ -173,6 +173,7 @@ async function getPull(client, context, pullNumber) {
 }
 
 async function getPullComments(client, context, pullNumber) {
+	console.log('Getting comments for pull:', pullNumber, context.repo, client.pulls.listCommentsForReview);
 	const response = await client.pulls.listCommentsForReview({
 		...context.repo,
 		pull_number: pullNumber
@@ -241,8 +242,10 @@ async function run() {
 
 		const pull = await getPull(client, context, pullNumber);
 		console.log('Got pull...', pull);
+		console.log('Getting review comments...')
 		const reviewComments = await getPullComments(client, context, pull.number);
 		console.log('Got comments...', reviewComments);
+		console.log('Getting issue comments...')
 		const issueComments = await getIssueComments(client, context, pull.number);
 		console.log('Got issue comments...', issueComments);
 		const comments = [...reviewComments, ...issueComments];
@@ -253,6 +256,7 @@ async function run() {
 			return;
 		}
 
+		console.log('Getting pull commits...')
 		const commits = await getPullCommitShas(client, context, pullNumber);
 		console.log('Got commits...', commits);
 
