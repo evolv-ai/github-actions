@@ -242,15 +242,15 @@ async function run() {
 
 		const pull = await getPull(client, context, pullNumber);
 		console.log('Got pull...', pull);
-		console.log('Getting review comments...')
-		const reviewComments = await getPullComments(client, context, pull.number);
-		console.log('Got comments...', reviewComments);
+		// console.log('Getting review comments...')
+		// const reviewComments = await getPullComments(client, context, pull.number);
+		// console.log('Got comments...', reviewComments);
 		console.log('Getting issue comments...')
 		const issueComments = await getIssueComments(client, context, pull.number);
 		console.log('Got issue comments...', issueComments);
-		const comments = [...reviewComments, ...issueComments];
+		// const comments = [...reviewComments, ...issueComments];
 
-		const hotfixes = getHotfixes(pull, comments)
+		const hotfixes = getHotfixes(pull, issueComments)
 		if (hotfixes.length === 0) {
 			console.log('Bailing, no versions to hotfix.')
 			return;
