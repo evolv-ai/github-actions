@@ -237,11 +237,14 @@ async function run() {
 
 		console.log(`Repo: ${context.repo.owner}/${context.repo.repo}`);
 		console.log('Pull request number:', pullNumber);
-		console.log('Beginning cherry pick routine...');
+		console.log('Beginning the cherry pick routine...');
 
 		const pull = await getPull(client, context, pullNumber);
+		console.log('Got pull...', pull);
 		const reviewComments = await getPullComments(client, context, pull.number);
+		console.log('Got comments...', reviewComments);
 		const issueComments = await getIssueComments(client, context, pull.number);
+		console.log('Got issue comments...', issueComments);
 		const comments = [...reviewComments, ...issueComments];
 
 		const hotfixes = getHotfixes(pull, comments)
@@ -251,6 +254,8 @@ async function run() {
 		}
 
 		const commits = await getPullCommitShas(client, context, pullNumber);
+		console.log('Got commits...', commits);
+
 		if (commits.length > 99) {
 			throw Error('Bailing, only 99 or less commits are allowed to be cherry picked via this action.');
 		}
