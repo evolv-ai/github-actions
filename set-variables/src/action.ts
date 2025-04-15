@@ -8,7 +8,7 @@ export async function run(): Promise<void> {
 		const payload = context.payload as EventPayloads.WebhookPayloadDeploymentDeployment;
 
 		const token = core.getInput('token');
-		const client = new github.GitHub(token);
+		const client = github.getOctokit(token).rest;
 
 		const releaseRef = payload.ref;
 		const semVer = `${releaseRef}`.replace(/^v/, '');

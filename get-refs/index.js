@@ -6,8 +6,8 @@ async function run() {
 		const context = github.context;
 		const token = core.getInput('token');
 		const ref = core.getInput('ref')
-		
-		const client = new github.GitHub(token);
+
+		const client = github.getOctokit(token).rest;
 
 		const refs = await client.git.listMatchingRefs({
 			...context.repo,
