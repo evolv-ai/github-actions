@@ -36,7 +36,7 @@ async function run() {
 			throw Error('`bump` input must be either `major`, `minor`, or `patch`.');
 		}
 
-		const octokit = github.getOctokit(token)
+		const client = github.getOctokit(token).rest
 
 		let ref = `tags/${prefix}`;
 		if (major) {
@@ -46,7 +46,7 @@ async function run() {
 			ref += `${minor}.`
 		}
 
-		const tags = (await octokit.rest.git.listMatchingRefs({
+		const tags = (await client.git.listMatchingRefs({
 			...context.repo,
 			ref
 		})).data;
@@ -78,7 +78,7 @@ async function run() {
 			return;
 		}
 
-		const resp = await octokit.rest.git.createRef({
+		const resp = await client.git.createRef({
 			...context.repo,
 			sha: context.sha,
 			ref: `refs/tags/${newTag}`
