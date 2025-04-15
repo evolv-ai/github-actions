@@ -9,11 +9,11 @@ const SEMVER_VERSIONS = [MAJOR, MINOR, PATCH];
 function generateNewTag(semvers, bump, prefix, suffix) {
 	let maxNum = 0;
 	let maxSemver = null;
-	semvers.map(semver => {     
-			if (semver[bump] >= maxNum) { 
+	semvers.map(semver => {
+			if (semver[bump] >= maxNum) {
 				maxSemver = semver
 				maxNum = semver[bump]
-			};    
+			};
 	});
 
 	maxSemver[bump] = maxSemver[bump] + 1;
@@ -35,20 +35,20 @@ async function run() {
 		if (SEMVER_VERSIONS.indexOf(bump) === -1) {
 			throw Error('`bump` input must be either `major`, `minor`, or `patch`.');
 		}
-		
-		const client = new github.GitHub(token);
+
+		const octokit = github.getOctokit(token)
 
 		let ref = `tags/${prefix}`;
 		if (major) {
 			ref += `${major}.`
-		} 
+		}
 		if (minor) {
 			ref += `${minor}.`
 		}
 
-		const tags = (await client.git.listMatchingRefs({
+		const tags = (await octokit.rest.git.listMatchingRefs({
 			...context.repo,
-			ref 
+			ref
 		})).data;
 
 		console.log(tags);
@@ -78,7 +78,7 @@ async function run() {
 			return;
 		}
 
-		const resp = await client.git.createRef({
+		const resp = await octokit.rest.git.createRef({
 			...context.repo,
 			sha: context.sha,
 			ref: `refs/tags/${newTag}`
