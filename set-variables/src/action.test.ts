@@ -27,10 +27,12 @@ describe('Set Variables Action', () => {
 			outputs.push([name, value]);
 		});
 
-		jest.spyOn(github, 'GitHub').mockImplementation(() => {
+		jest.spyOn(github, 'getOctokit').mockImplementation(() => {
 			return {
-				git: {
-					createRef: createRefSpy
+				rest: {
+					git: {
+						createRef: createRefSpy
+					}
 				}
 			} as any;
 		});
